@@ -1,0 +1,83 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+
+package(default_visibility = ["//visibility:public"])
+
+bool_flag(
+    name = "enable_tracing",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "with_tracing",
+    flag_values = {
+        ":enable_tracing": "True",
+    }
+)
+
+cc_library(
+    name = "triton-server-lib",
+    srcs = [
+        "src/classification.cc",
+        "src/command_line_parser.cc",
+        "src/common.cc",
+        "src/memory_alloc.cc",
+        "src/shared_memory_manager.cc",
+        "src/triton_signal.cc",
+        "src/grpc/grpc_server.cc",
+        "src/grpc/grpc_utils.cc",
+        "src/grpc/infer_handler.cc",
+        "src/grpc/stream_infer_handler.cc",
+    ] + select({
+        ":with_tracing": [
+            "src/tracer.cc",
+        ],
+        "//conditions:default": [],
+    }),
+    hdrs = [
+        "src/classification.h",
+        "src/command_line_parser.h",
+        "src/common.h",
+        "src/data_compressor.h",
+        "src/shared_memory_manager.h",
+        "src/triton_signal.h",
+        "src/tracer.h",
+        "src/grpc/grpc_server.h",
+        "src/grpc/grpc_utils.h",
+        "src/grpc/infer_handler.h",
+        "src/grpc/stream_infer_handler.h",
+        "src/grpc/grpc_handler.h",
+    ],
+    defines = select({
+        ":with_tracing": ["TRITON_ENABLE_TRACING"],
+        "//conditions:default": [],
+    }),
+    deps = [
+        "@triton-core//:triton-core-api",
+        "@triton-core//:libtritonserver_import",
+        "@triton-backend//:triton-backend",
+        "@com_github_grpc_grpc//:grpc",
+        "@com_github_grpc_grpc//:grpc++",
+        "@boost.stacktrace",
+        "@com_googlesource_code_re2//:re2",
+    ]
+)
+
+cc_binary(
+    name = "tritonserver",
+    srcs = [
+        "src/main.cc",
+    ],
+    deps = [
+        ":triton-server-lib",
+    ],
+)
+
+cc_binary(
+    name = "multi_server",
+    srcs = [
+        "src/multi_server.cc",
+    ],
+    deps = [
+        ":triton-server-lib",
+    ],
+)

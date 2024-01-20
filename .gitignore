@@ -6,3 +6,6 @@ __pycache__
 tmp
 *.log
 test_results.txt
+
+bazel-*
+MODULE.bazel.lock

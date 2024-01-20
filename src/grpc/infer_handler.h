@@ -27,7 +27,7 @@
 
 #include <grpc++/alarm.h>
 #include <grpc++/grpc++.h>
-#include <re2/re2.h>
+#include "re2/re2.h"
 
 #include <condition_variable>
 #include <queue>
@@ -36,7 +36,7 @@
 
 #include "../tracer.h"
 #include "grpc_handler.h"
-#include "grpc_service.grpc.pb.h"
+#include "protobuf/grpc_service.grpc.pb.h"
 #include "grpc_utils.h"
 #include "triton/common/logging.h"
 #include "triton/core/tritonserver.h"

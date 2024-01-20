@@ -1,0 +1,10 @@
+common --enable_bzlmod
+# by adding the bazelboost registry the BCR gets removed so you must add it here as well
+common --registry=http://localhost:8080
+common --registry=https://bcr.bazel.build
+
+build --cxxopt="-std=c++20"
+
+build:cuda --@rules_cuda//cuda:enable
+build:cuda --@rules_cuda//cuda:archs='sm_80;sm_90'
+build:cuda --@rules_cuda//cuda:compiler=nvcc

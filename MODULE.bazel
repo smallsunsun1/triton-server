@@ -1,0 +1,41 @@
+"""triton-server bazel module"""
+module(
+    name = "triton-server",
+    version = "r23.10",
+    compatibility_level = 1,
+)
+
+bazel_dep(name = "triton-common", version = "r23.10")
+bazel_dep(name = "triton-core", version = "r23.10")
+bazel_dep(name = "triton-backend", version = "r23.10")
+bazel_dep(name = "rules_cuda", version = "0.2.1")
+bazel_dep(name = "platforms", version = "0.0.8")
+bazel_dep(name = "bazel_skylib", version = "1.5.0")
+bazel_dep(name = "boost.stacktrace", version = "1.83.0.bzl.1")
+bazel_dep(name = "grpc", version = "1.48.1.bcr.3", repo_name = "com_github_grpc_grpc")
+bazel_dep(name = "re2", repo_name = "com_googlesource_code_re2", version = "2021-09-01")
+
+local_path_override(
+    module_name = "triton-common",
+    path = "/root/code/common",
+)
+local_path_override(
+    module_name = "triton-core",
+    path = "/root/code/core",
+)
+local_path_override(
+    module_name = "triton-backend",
+    path = "/root/code/backend",
+)
+local_path_override(
+    module_name = "cnmem",
+    path = "/root/code/cnmem",
+)
+
+cuda = use_extension("@rules_cuda//cuda:extensions.bzl", "toolchain", dev_dependency = True)
+cuda.local_toolchain(
+    name = "local_cuda",
+    toolkit_path = "",
+)
+use_repo(cuda, "local_cuda")
+

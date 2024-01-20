@@ -32,7 +32,7 @@
 #include "../classification.h"
 #include "../common.h"
 #include "../shared_memory_manager.h"
-#include "grpc_service.grpc.pb.h"
+#include "protobuf/grpc_service.grpc.pb.h"
 #include "triton/common/logging.h"
 #include "triton/core/tritonserver.h"
 
